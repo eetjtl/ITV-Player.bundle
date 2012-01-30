@@ -1,35 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <site  site="http://www.itv.com/itvplayer"
-       plugin="http://www.itv.com/mercury/Mercury_VideoPlayer*"
+       plugin="http://www\.itv\.com/mediaplayer/ITVMediaPlayer\.swf.*"
        initialState="buffering" 
        version="1.0">
 	
-       
-       <seekbar type="simple">
-	<start x="25" y="312" />  
-	<end x="400" y="312" />
-	<played>
-	  <color rgb="000000" />
-	</played>
-      </seekbar>
-       
-       
-       
-       <state name="buffering">
+    <crop x="0" y="60" width="640" height="360"/>
+     
+	<seekbar type="simple" smallStep="5" bigStep="10">
+		<start x="1" y="430" />  
+		<end x="639" y="430" />
+		<dead x="325" y="460" />
+		<played>
+			<color rgb="000000" />
+			<color rgb="666666" />
+			<color rgb="FFFFFF" />
+		</played>
+     </seekbar>
+     
+     <state name="buffering">
 		<event>
 			<condition>
-				<frameLoaded />
+				<url matches=".*image\.jpg.*" />
 			</condition>
 			<action>
-				<run script="var plexEMP = null;" />
-				<run script="plexEMP = document.getElementById('Mercury_VideoPlayervideoplayer'); " />
-				
-				<pause time="1000"/> <!-- wait one second -->
-				<run script="plexEMP.guidanceAproved(); " />
-				
-				<run script="plexEMP.playVideo(); " />
+				<!-- resize player so that controls are no longer overlaid over video -->
+				<run script="var el = document.getElementById('ITVMediaPlayer');"/>
+				<run script="el.setAttribute('height', '480');" />
+				<!-- wait a few seconds -->
+				<pause time="2000" />
+				<click x="23" y="460" />
+				<pause time="500" />
+				<click x="325" y="460" />
 				<goto state="playing" />
+				
 			</action>
 		</event>
 	</state>
@@ -37,16 +41,20 @@
       <!-- Playing -->
 	<state name="playing">
 		<event>
-			<condition>                         
-                              <command name="pause" />
+			<condition>
+				<command name="pause" />
 			</condition>
-			<action>			      
-                              <run script="plexEMP.pauseVideo();" />
-			      <goto state="paused" />
+			<action>
+				<click x="23" y="460" />
+				<!--
+				  Manually move mouse to dead position.Pause a little
+				  while to give player chance to process each click.
+				-->
+				<pause time="100" />
+				<click x="325" y="460" />
+				<goto state="paused" />
 			</action>
 		</event>
-		
-
 	</state>
 
 	<!-- Paused -->
@@ -56,9 +64,10 @@
 				<command name="play" />
 			</condition>
 			<action>
-			       <run script="plexEMP.guidanceAproved(); " />
-                               <run script="plexEMP.playVideo();" />
-			       <goto state="playing" />
+				<click x="23" y="460" />
+				<pause time="100" />
+				<click x="325" y="460" />
+				<goto state="playing" />
 			</action>
 		</event>
 	</state>
