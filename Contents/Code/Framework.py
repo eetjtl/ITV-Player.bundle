@@ -193,7 +193,7 @@ class Episode:
       return self.shortSynopsis +'\n\nDays Remaining: ' + self.daysRemaining
    
    def subtitle(self):
-      return self.lastBroadcast + ' ' + self.lastBroadcastTime
+      return self.lastBroadcast + ' ' + self.lastBroadcastTime[0:5]
 
 ###################################################
 #Helper Methods

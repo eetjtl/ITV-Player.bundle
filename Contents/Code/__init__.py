@@ -194,7 +194,7 @@ def RenderEpisodeList(sender, url = None):
    test = None
    for e in episodes:
       episode = constructEpisode(e)
-      dir.Append(WebVideoItem(url = ITV_SD_PLAYER_URL % episode.id , title = episode.title, subtitle =  episode.subtitle(), thumb = episode.posterFrameUri, summary = episode.summary(), duration = 0))  
+      dir.Append(WebVideoItem(url = ITV_SD_PLAYER_URL % episode.id , title = episode.title, subtitle =  episode.subtitle(), thumb = episode.posterFrameUri, summary = episode.summary(), duration = int(episode.duration) * 60 * 1000))  
    
   
    
