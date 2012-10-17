@@ -2,8 +2,8 @@
 
 <site  site="http://www.itv.com/itvplayer"
        plugin="http://www\.itv\.com/mediaplayer/ITVMediaPlayer\.swf.*"
-       initialState="buffering" 
-       version="1.0">
+       initialState="loading" 
+       version="2.0">
 	
     <crop x="0" y="60" width="640" height="360"/>
      
@@ -16,8 +16,24 @@
 			<color rgb="666666" />
 			<color rgb="FFFFFF" />
 		</played>
-     </seekbar>
-     
+    </seekbar>
+
+    <state name="loading">
+    	<event>
+			<condition>
+				<frameLoaded/>
+			</condition>
+			<action>
+				<!--
+					Make player only element on page so that Windows PMS and OSX PMS
+				    have the same co-ordinate origin.
+				 --> 
+				<run script="$('body').html($('#puxVideoPlayerPlaceholder').html())"/>
+				<goto state="buffering" />
+			</action>
+		</event>
+    </state>
+    
      <state name="buffering">
 		<event>
 			<condition>
@@ -25,11 +41,14 @@
 			</condition>
 			<action>
 				<!-- resize player so that controls are no longer overlaid over video -->
-				<run script="var el = document.getElementById('ITVMediaPlayer');"/>
-				<run script="el.setAttribute('height', '480');" />
+				<run script="$('#ITVMediaPlayer').attr('height', '480');" />
 				<!-- wait a few seconds -->
 				<pause time="2000" />
 				<click x="23" y="460" />
+				<!--
+				  Manually move mouse to dead position.Pause a little
+				  while to give player chance to process each click.
+				-->
 				<pause time="500" />
 				<click x="325" y="460" />
 				<goto state="playing" />
@@ -65,6 +84,10 @@
 			</condition>
 			<action>
 				<click x="23" y="460" />
+				<!--
+				  Manually move mouse to dead position.Pause a little
+				  while to give player chance to process each click.
+				-->
 				<pause time="100" />
 				<click x="325" y="460" />
 				<goto state="playing" />
