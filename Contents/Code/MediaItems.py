@@ -1,20 +1,3 @@
-#################################################
-#			      			#
-# ITV Player Plex v9 Episode & Programme Class  #
-#			      			#
-# Version: 	0.1				# 
-# Author: 	James Gould			#
-# Contributors: 				#
-# Created: 	08th Sept 2010			#
-# Last Updated: 08th Sept 2010			#
-#						#
-#################################################
-
-# PMS plugin framework
-from PMS import *
-from PMS.Objects import *
-from PMS.Shortcuts import *
-
 class ProgrammeLatestEpisode:
    id = ""
    date = ""
@@ -145,6 +128,7 @@ class EpisodeDenton:
 class Episode:
    id = ""
    title = ""
+   seasonNumber = ""
    episodeNumber = ""
    genres = ""
    duration = ""
@@ -160,6 +144,7 @@ class Episode:
    def __init__(self, 
       id = None, 
       title = None,
+      seasonNumber = None,
       episodeNumber = None,
       genres = None,
       duration = None,
@@ -177,6 +162,7 @@ class Episode:
       
       self.id = id
       self.title = title
+      self.seasonNumber = seasonNumber
       self.episodeNumber = episodeNumber
       self.genres = genres
       self.duration = duration
@@ -193,7 +179,7 @@ class Episode:
       return self.shortSynopsis +'\n\nDays Remaining: ' + self.daysRemaining
    
    def subtitle(self):
-      return self.lastBroadcast + ' ' + self.lastBroadcastTime[0:5]
+      return self.lastBroadcast
 
 ###################################################
 #Helper Methods
