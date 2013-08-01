@@ -80,7 +80,7 @@ def Start():
 @handler('/video/itv', NAME, thumb=ICON, art=ART)
 def VideoMainMenu():
 
-	oc = ObjectContainer(no_cache=True)
+	oc = ObjectContainer()
 		
 	oc.add(
 		DirectoryObject(
@@ -135,7 +135,7 @@ def VideoMainMenu():
 #################################################
 def AddGenres(parent_name=None):
 
-	oc = ObjectContainer(no_cache=True, title1=parent_name, title2=TV_GENRES_TITLE)
+	oc = ObjectContainer(title1=parent_name, title2=TV_GENRES_TITLE, view_group="List")
 	
 	genres = [
 		['Children','children'],
@@ -164,7 +164,7 @@ def AddGenres(parent_name=None):
 #################################################
 def AddTVChannels(parent_name=None):
 
-	oc = ObjectContainer(no_cache=True, title1=parent_name, title2=TV_CHANNELS_TITLE)
+	oc = ObjectContainer(title1=parent_name, title2=TV_CHANNELS_TITLE, view_group="List")
 	
 	channels = [
 		['ITV','itv',ITV1_LOGO],
@@ -189,7 +189,7 @@ def AddTVChannels(parent_name=None):
 #################################################
 def AddDateList(parent_name=None):
 
-	oc = ObjectContainer(no_cache=True, title1=parent_name, title2=TV_DATE_TITLE)
+	oc = ObjectContainer(no_cache=True, view_group="List", title1=parent_name, title2=TV_DATE_TITLE)
 	
 	date = Datetime.Now()
 	oc.add(
@@ -268,7 +268,7 @@ def RenderProgramList(url=None, sort_by_name=False, parent_name=None, section_na
 
 def RenderEpisodesForDay(url, parent_name=None, section_name=None):
 
-	oc = ObjectContainer(no_cache=True, title1=parent_name, title2=section_name)
+	oc = ObjectContainer(no_cache=True, title1=parent_name, title2=section_name, view_group="InfoList")
 	eps = []
 	
 	content = HTML.ElementFromURL(url, errors='ignore', cacheTime=1800)
@@ -302,7 +302,7 @@ def RenderEpisodesForDay(url, parent_name=None, section_name=None):
 
 def RenderSearchResults(query=None, parent_name=None):
 
-	oc = ObjectContainer(no_cache=True, title1=parent_name)
+	oc = ObjectContainer(no_cache=True, title1=parent_name, view_group="InfoList")
 		
 	content = HTML.ElementFromURL(ITV_SEARCH_URL % String.Quote(query), errors='ignore', cacheTime=1800)
 	
@@ -364,7 +364,7 @@ def RenderSearchResults(query=None, parent_name=None):
 
 def RenderEpisodeList(url=None, parent_name=None, section_name=None):
 
-	oc = ObjectContainer(no_cache=True, title1=parent_name, title2=section_name)
+	oc = ObjectContainer(no_cache=True, title1=parent_name, title2=section_name, view_group="InfoList")
 	content = HTML.ElementFromURL(url, errors='ignore', cacheTime=1800)
 
 	episodes = content.xpath(ITV_EPISODE_XPATH)
