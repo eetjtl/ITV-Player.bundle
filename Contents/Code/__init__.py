@@ -61,8 +61,6 @@ CITV_LOGO               = "http://thumbs.tvgenius.net/512x512/bds-citv.jpg"
 #################################################
 
 def Start():
-
-	Plugin.AddPrefixHandler(VIDEO_PREFIX, VideoMainMenu, NAME, ICON, ART)
 	
 	Plugin.AddViewGroup("InfoList", viewMode="InfoList", mediaType="items")
 	Plugin.AddViewGroup("List", viewMode="List", mediaType="items")
@@ -79,7 +77,7 @@ def Start():
 
 #################################################
 
-@handler('/video/itv', NAME)
+@handler('/video/itv', NAME, thumb=ICON, art=ART)
 def VideoMainMenu():
 
 	oc = ObjectContainer(no_cache=True)
