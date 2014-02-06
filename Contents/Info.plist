@@ -4,16 +4,17 @@
 	<dict>
 		<key>CFBundleIdentifier</key>
 		<string>com.plexapp.plugins.itvplayer</string>
-		
 		<key>PlexClientPlatforms</key>
 		<string>*</string>
-		
 		<key>PlexFrameworkVersion</key>
 		<string>2</string>
-		
 		<key>PlexPluginRegions</key>
 		<array>
 			<string>GB</string>
+		</array>
+		<key>PlexFrameworkFlags</key>
+		<array>
+			<string>UseRealRTMP</string>
 		</array>
 	</dict>
 </plist>
