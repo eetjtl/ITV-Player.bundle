@@ -2,79 +2,22 @@ import re
 import datetime
 
 def NormalizeURL(url):
-
 	return url
 
 def MetadataObjectForURL(url):
-
 	content = HTML.ElementFromURL(url, errors='ignore', cacheTime=1800)
-	element = content.xpath("//div[@class='hero']")[0]
-
-	id = url
-	if len(element.xpath(".//div[contains(@class, 'node-episode')]/a[1]/@href")) > 0:
-		id = ITV_URL + element.xpath(".//div[contains(@class, 'node-episode')]/a[1]/@href")[0]
-	elif len(element.xpath("./a")) > 0:
-		id = ITV_URL + element.xpath("./a[1]/@href")[0]
-
-	title = 'Unknown'
-	if len(element.xpath("//*[@property='dc:title']")) > 0:
-		title = element.xpath("//*[@property='dc:title']")[0].text.strip()
-
-	seasonNumber = ''
-	if len(element.xpath(".//div[contains(@class, 'field-name-field-season-number')]//text()")) > 0:
-		seasonNumber = element.xpath(".//div[contains(@class, 'field-name-field-season-number')]//text()")[0]
-		title += "(Season: " + seasonNumber
-
-		episodeNumber = ''
-		if len(element.xpath(".//div[contains(@class, 'field-name-field-episode-number')]//text()")) > 0:
-			episodeNumber = element.xpath(".//div[contains(@class, 'field-name-field-episode-number')]//text()")[0]
-			title += ", Ep.: " + episodeNumber
-
-		title += ")"
-
-	daysRemaining = None
-	if len(element.xpath(".//div[@class='offer-duration']")) > 0:
-		daysRemaining = re.search("(\\d*)",element.xpath(".//div[@class='offer-duration']")[0].text.strip()).groups()[0]
-
-	shortSynopsis = ''
-	if len(element.xpath(".//div[contains(@class,'field-name-field-short-synopsis')]//text()")) > 0:
-		shortSynopsis = element.xpath(".//div[contains(@class,'field-name-field-short-synopsis')]//text()")[0]
-
-	duration = None
-	if len(element.xpath(".//div[contains(@class, 'field-name-field-duration')]//text()")) > 0:
-		res = re.search(
-			"(?:(?:(\\d+)(?:\s*hours?\s*))|(?:(\\d+)(?:\s*minutes?))){1,2}",
-			" ".join(element.xpath(".//div[contains(@class, 'field-name-field-duration')]//text()")).strip()
-		)
-		if res:
-			duration = (int(res.groups()[0]) if res.groups()[0] else 0) * 60
-			duration += (int(res.groups()[1]) if res.groups()[1] else 0)
-
-	lastBroadcast = datetime.datetime.strptime(
-		element.xpath(".//div[contains(@class, 'field-name-field-broadcastdate')]//span/@content")[0][:-6],
-		'%Y-%m-%dT%H:%M:%S'
-	)
-
-	posterFrameUri = None
-	if len(element.xpath(".//div[contains(@class,'field-name-field-image')]//img/@src")) > 0:
-		posterFrameUri = element.xpath(".//div[contains(@class,'field-name-field-image')]//img/@src")[0]
-	elif len(element.xpath(".//param[@name='poster']")) > 0:
-		posterFrameUri = element.xpath(".//param[@name='poster']/@value")[0]
-
-	if posterFrameUri:
-		posterFrameUri = posterFrameUri.replace('player_image_thumb_standard','posterframe')
+	mytitle = content.xpath('//meta[@property="og:title"]/@content')[0]
+	mysummary = content.xpath('//meta[@property="og:description"]/@content')[0]
+	myimage = content.xpath('//meta[@property="og:image"]/@content')[0]
 
 	return VideoClipObject(
-			title = title,
-			summary = shortSynopsis,
-			thumb = posterFrameUri,
-			originally_available_at = lastBroadcast,
-			duration = duration * 60 * 1000,
+			title = mytitle,
+			summary = mysummary,
 			source_title = "ITV Player",
+			thumb = myimage
 		)
 
 def MediaObjectsForURL(url):
-
 	ret = []
 	ret.append(
 		MediaObject(
@@ -90,26 +33,8 @@ def MediaObjectsForURL(url):
 @indirect
 def PlayVideo(url):
 
-	Log('=============================================================== ' + url)
-
-	# Borrowed from XBMC ITV Plugin and reworked for Plex
-	html = HTTP.Request(url).content
-	html = re.sub('&#039;','\'',html)
-
-	#Log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-
-	if re.search('"title":"This episode is no longer available."',html):
-		raise Exception("Sorry This episode is no longer available")
-
-	match1 = re.findall(ur'"productionId":"(.*?)",', html, flags=re.DOTALL)
-	if match1:
-		productionID = match1[0]
-		productionID=re.sub('\\\\','',productionID)
-	else:
-		Log("NO PRODUCTION ID ")
-
-	#Log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-	#Log("Production ID is %s" % productionID)
+	content = HTML.ElementFromURL(url, errors='ignore', cacheTime=1800)
+	productionID = content.xpath('//div[@id="video"]/@data-video-id')[0]
 
 	SM_TEMPLATE = """
 	<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tem="http://tempuri.org/" xmlns:itv="http://schemas.datacontract.org/2004/07/Itv.BB.Mercury.Common.Types" xmlns:com="http://schemas.itv.com/2009/05/Common">
