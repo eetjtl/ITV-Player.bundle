@@ -8,7 +8,7 @@
 		<dict>
 			<key>URLPatterns</key>
 			<array>
-				<string>http://(www\.)?itv\.com/hub</string>
+				<string>http://(*\.)?itv\.com/hub</string>
 			</array>
 		</dict>
 	</dict>
