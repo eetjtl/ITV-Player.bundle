@@ -132,7 +132,7 @@ def RenderEpisodeList(url=None, parent_name=None, section_name=None):
 
 	oc.add(
 		VideoClipObject(
-			url = url, # "http://www.itv.com/hub/FAKEURL/" + content.xpath('//div[@id="video"]/@data-video-id')[0],
+			url = url,
 			title = mytitle,
 			summary = mysummary,
 			thumb = myimage
@@ -142,8 +142,9 @@ def RenderEpisodeList(url=None, parent_name=None, section_name=None):
 
 	moreEpisodes = content.xpath('//a[@data-content-type="episode"]')
 
-	for episode in moreEpisodes:
-		if (len(episode.xpath('.//div[@data-overlay="Now watching"]')) == 0):
+	# skip the first as it's the current episode that we already got info for above
+	if len(moreEpisodes) > 1:
+		for episode in moreEpisodes[1:]:
 			epUrl = episode.xpath("@href")[0]
 			epContent = HTML.ElementFromURL(epUrl, errors='ignore', cacheTime=1800)
 			eptitle = epContent.xpath('//meta[@property="og:title"]/@content')[0]
